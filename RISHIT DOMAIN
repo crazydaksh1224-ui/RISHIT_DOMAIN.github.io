@@ -1,690 +1,300 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shared Gallery Widget</title>
+    <style>
+        /* CSS Variables for Apple-style Light Theme */
+        :root {
+            --bg-color: #f5f5f7;
+            --text-primary: #1d1d1f;
+            --text-secondary: #86868b;
+            --card-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.5);
+            --accent-color: #0071e3;
+            --accent-hover: #0077ED;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --radius-lg: 24px;
+            --radius-md: 14px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
 
-<meta charset="UTF-8">
+        /* Typography & Base Setup */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-<title>Shared Notes Timeline</title>
+        .widget-container {
+            width: 100%;
+            max-width: 900px;
+        }
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
 
-<link rel="preconnect"
-href="https://fonts.gstatic.com"
-crossorigin>
+        header h1 {
+            font-size: 40px;
+            font-weight: 700;
+            letter-spacing: -0.015em;
+            margin-bottom: 8px;
+        }
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-rel="stylesheet">
+        header p {
+            font-size: 19px;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
 
-<style>
+        /* Glassmorphism Upload Section */
+        .upload-section {
+            background: var(--card-bg);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border: var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 50px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
 
-/************************************************
-RESET
-************************************************/
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-}
+        .input-group label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
 
-html{
-scroll-behavior:smooth;
-}
+        input[type="text"], input[type="file"] {
+            width: 100%;
+            padding: 16px;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(0,0,0,0.1);
+            background: rgba(255,255,255,0.8);
+            font-size: 16px;
+            font-family: inherit;
+            transition: var(--transition);
+        }
 
-body{
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.2);
+        }
 
-font-family:Inter,sans-serif;
+        input[type="file"]::file-selector-button {
+            background-color: var(--bg-color);
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 8px;
+            padding: 8px 16px;
+            margin-right: 16px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+        }
 
-background:#f6f7fb;
+        input[type="file"]::file-selector-button:hover {
+            background-color: #e8e8ed;
+        }
 
-color:#222;
+        .btn-submit {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 980px; /* Apple pill shape */
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            align-self: flex-end;
+        }
 
-overflow-x:hidden;
+        .btn-submit:hover {
+            background-color: var(--accent-hover);
+            transform: scale(1.02);
+        }
 
-}
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
 
-/************************************************
-VARIABLES
-************************************************/
+        /* Gallery Grid */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
 
-:root{
+        /* Individual Photo Card */
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border: var(--glass-border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInCard 0.6s ease forwards;
+        }
 
---bg:white;
+        .card:hover {
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 14px 40px rgba(0, 0, 0, 0.12);
+        }
 
---primary:#111;
+        .card-image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            background-color: #e8e8ed;
+        }
 
---secondary:#666;
+        .card-content {
+            padding: 20px;
+        }
 
---border:#e7e7e7;
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            letter-spacing: -0.01em;
+        }
 
---shadow:
-0 10px 35px rgba(0,0,0,.08);
+        .card-date {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
 
---radius:22px;
-
---transition:.35s cubic-bezier(.2,.8,.2,1);
-
-}
-
-/************************************************
-APP
-************************************************/
-
-.app{
-
-width:100%;
-
-min-height:100vh;
-
-display:flex;
-
-flex-direction:column;
-
-}
-
-/************************************************
-HEADER
-************************************************/
-
-.header{
-
-height:80px;
-
-background:white;
-
-border-bottom:1px solid var(--border);
-
-display:flex;
-
-align-items:center;
-
-justify-content:space-between;
-
-padding:0 40px;
-
-position:sticky;
-
-top:0;
-
-z-index:500;
-
-}
-
-/************************************************
-CONTENT
-************************************************/
-
-.content{
-
-padding:40px;
-
-display:flex;
-
-flex-direction:column;
-
-gap:35px;
-
-}
-
-/************************************************
-TIMELINE
-************************************************/
-
-.timeline{
-
-display:flex;
-
-flex-direction:column;
-
-gap:32px;
-
-}
-
-</style>
-
+        /* Animations */
+        @keyframes fadeInCard {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="app">
-
-<header class="header">
-
-<div class="logoArea">
-
-<div class="logoCircle">
-
-📝
-
-</div>
-
-<div class="workspaceInfo">
-
-<h1>
-
-Shared Notes
-
-</h1>
-
-<p>
-
-Realtime collaborative notebook
-
-</p>
-
-</div>
-
-</div>
-
-<div class="headerMiddle">
-
-<div class="searchBox">
-
-<svg viewBox="0 0 24 24" width="18" height="18">
-
-<path fill="currentColor"
-d="M10 4a6 6 0 104.47 10.03l4.75 4.75 1.41-1.41-4.75-4.75A6 6 0 0010 4zm0 2a4 4 0 110 8 4 4 0 010-8z"/>
-
-</svg>
-
-<input
-
-type="text"
-
-placeholder="Search notes..."
-
-id="searchInput"
-
->
-
-</div>
-
-</div>
-
-<div class="headerRight">
-
-<div class="statsCard">
-
-<span id="noteCount">
-
-0 Notes
-
-</span>
-
-</div>
-
-<button
-
-id="uploadButton"
-
-class="uploadBtn">
-
-+
-
-Upload
-
-</button>
-
-</div>
-
-</header>
-
-<main class="content">
-
-<div class="timeline">
-
-<div class="timelineLine"></div>
-
-<section class="daySection">
-
-<div class="dayHeader">
-
-<div class="dayDot"></div>
-
-<h2>Monday</h2>
-
-</div>
-
-<div class="notesGrid" id="monday">
-
-<div class="noteCard addCard">
-
-+
-
-Add Note
-
-</div>
-
-</div>
-
-</section>
-
-<section class="daySection">
-
-<div class="dayHeader">
-
-<div class="dayDot"></div>
-
-<h2>Tuesday</h2>
-
-</div>
-
-<div class="notesGrid" id="tuesday">
-
-<div class="noteCard addCard">
-
-+
-
-Add Note
-
-</div>
-
-</div>
-
-</section>
-
-<section class="daySection">
-
-<div class="dayHeader">
-
-<div class="dayDot"></div>
-
-<h2>Wednesday</h2>
-
-</div>
-
-<div class="notesGrid" id="wednesday">
-
-<div class="noteCard addCard">
-
-+
-
-Add Note
-
-</div>
-
-</div>
-
-</section>
-
-<section class="daySection">
-
-<div class="dayHeader">
-
-<div class="dayDot"></div>
-
-<h2>Thursday</h2>
-
-</div>
-
-<div class="notesGrid" id="thursday">
-
-<div class="noteCard addCard">
-
-+
-
-Add Note
-
-</div>
-
-</div>
-
-</section>
-
-<section class="daySection">
-
-<div class="dayHeader">
-
-<div class="dayDot"></div>
-
-<h2>Friday</h2>
-
-</div>
-
-<div class="notesGrid" id="friday">
-
-<div class="noteCard addCard">
-
-+
-
-Add Note
-
-</div>
-
-</div>
-
-</section>
-
-<section class="daySection">
-
-<div class="dayHeader">
-
-<div class="dayDot"></div>
-
-<h2>Saturday</h2>
-
-</div>
-
-<div class="notesGrid" id="saturday">
-
-<div class="noteCard addCard">
-
-+
-
-Add Note
-
-</div>
-
-</div>
-
-</section>
-
-<section class="daySection">
-
-<div class="dayHeader">
-
-<div class="dayDot"></div>
-
-<h2>Sunday</h2>
-
-</div>
-
-<div class="notesGrid" id="sunday">
-
-<div class="noteCard addCard">
-
-+
-
-Add Note
-
-</div>
-
-</div>
-
-</section>
-
-</div>
-
-</main>
-
-</div>
-
-<script>
-// PART 1 JavaScript
-
-const notes = [];
-
-const uploadButton = document.getElementById("uploadButton");
-
-uploadButton.addEventListener("click", () => {
-
-    alert("Upload modal coming in Part 5!");
-
-});
-document.querySelectorAll(".addCard").forEach(card => {
-
-    card.addEventListener("click", () => {
-
-        alert("Upload window coming in Part 4");
-
-    });
-
-});
-/* ===== PART 3B ===== */
-
-.timeline{
-position:relative;
-display:flex;
-flex-direction:column;
-gap:45px;
-}
-
-.timelineLine{
-position:absolute;
-left:16px;
-top:15px;
-bottom:15px;
-width:2px;
-background:#e5e5e5;
-}
-
-.daySection{
-position:relative;
-padding-left:55px;
-}
-
-.dayHeader{
-display:flex;
-align-items:center;
-gap:15px;
-margin-bottom:18px;
-}
-
-.dayHeader h2{
-font-size:22px;
-font-weight:700;
-}
-
-.dayDot{
-width:18px;
-height:18px;
-border-radius:50%;
-background:#111;
-margin-left:-48px;
-z-index:2;
-box-shadow:0 0 0 6px white;
-}
-
-.notesGrid{
-display:grid;
-grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
-gap:22px;
-}
-
-.noteCard{
-background:white;
-border-radius:22px;
-border:1px solid var(--border);
-height:170px;
-display:flex;
-justify-content:center;
-align-items:center;
-font-size:18px;
-font-weight:600;
-cursor:pointer;
-transition:var(--transition);
-box-shadow:0 10px 30px rgba(0,0,0,.04);
-}
-
-.noteCard:hover{
-transform:translateY(-8px);
-box-shadow:0 25px 60px rgba(0,0,0,.12);
-}
-
-.addCard{
-background:#fafafa;
-border:2px dashed #d8d8d8;
-color:#777;
-}
-
-.addCard:hover{
-background:white;
-border-color:#111;
-color:#111;
-}
-/* ===== HEADER ===== */
-
-.logoArea{
-display:flex;
-align-items:center;
-gap:18px;
-}
-
-.logoCircle{
-width:52px;
-height:52px;
-border-radius:18px;
-background:#111;
-color:#fff;
-display:flex;
-justify-content:center;
-align-items:center;
-font-size:24px;
-box-shadow:var(--shadow);
-}
-
-.workspaceInfo h1{
-font-size:24px;
-font-weight:700;
-}
-
-.workspaceInfo p{
-font-size:13px;
-color:#777;
-margin-top:4px;
-}
-
-.headerMiddle{
-flex:1;
-display:flex;
-justify-content:center;
-}
-
-.searchBox{
-width:430px;
-height:48px;
-background:#f3f3f3;
-border-radius:15px;
-display:flex;
-align-items:center;
-padding:0 18px;
-gap:10px;
-}
-
-.searchBox input{
-flex:1;
-background:none;
-border:none;
-outline:none;
-font-size:15px;
-}
-
-.headerRight{
-display:flex;
-align-items:center;
-gap:18px;
-}
-
-.statsCard{
-padding:12px 18px;
-border-radius:15px;
-background:white;
-border:1px solid var(--border);
-font-weight:600;
-}
-
-.uploadBtn{
-height:48px;
-padding:0 30px;
-border:none;
-background:#111;
-color:white;
-border-radius:16px;
-cursor:pointer;
-transition:var(--transition);
-}
-
-.uploadBtn:hover{
-transform:translateY(-3px);
-}
-
-/* ===== TIMELINE ===== */
-
-.timeline{
-position:relative;
-display:flex;
-flex-direction:column;
-gap:45px;
-}
-
-.timelineLine{
-position:absolute;
-left:16px;
-top:10px;
-bottom:10px;
-width:2px;
-background:#ddd;
-}
-
-.daySection{
-position:relative;
-padding-left:55px;
-}
-
-.dayHeader{
-display:flex;
-align-items:center;
-gap:15px;
-margin-bottom:18px;
-}
-
-.dayHeader h2{
-font-size:22px;
-font-weight:700;
-}
-
-.dayDot{
-width:18px;
-height:18px;
-border-radius:50%;
-background:#111;
-margin-left:-48px;
-box-shadow:0 0 0 6px white;
-z-index:2;
-}
-
-.notesGrid{
-display:grid;
-grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
-gap:22px;
-}
-
-.noteCard{
-height:170px;
-background:white;
-border-radius:22px;
-display:flex;
-align-items:center;
-justify-content:center;
-border:1px solid var(--border);
-box-shadow:0 12px 30px rgba(0,0,0,.05);
-transition:.35s;
-font-weight:600;
-cursor:pointer;
-}
-
-.noteCard:hover{
-transform:translateY(-8px);
-box-shadow:0 24px 50px rgba(0,0,0,.12);
-}
-
-.addCard{
-border:2px dashed #ccc;
-background:#fafafa;
-color:#777;
-}
-
-.addCard:hover{
-border-color:#111;
-background:white;
-color:#111;
-}
-</script>
-
+    <div class="widget-container">
+        <header>
+            <h1>Shared Moments</h1>
+            <p>Upload and share your photos with everyone.</p>
+        </header>
+
+        <div class="upload-section">
+            <div class="input-group">
+                <label for="photoTitle">Card Title</label>
+                <input type="text" id="photoTitle" placeholder="E.g., Trip to the Mountains..." required>
+            </div>
+            
+            <div class="input-group">
+                <label for="photoFile">Select Photo</label>
+                <input type="file" id="photoFile" accept="image/*" required>
+            </div>
+
+            <button class="btn-submit" onclick="handleUpload()">Share Photo</button>
+        </div>
+
+        <div class="gallery-grid" id="galleryGrid">
+            </div>
+    </div>
+
+    <script>
+        // Array to hold our local state for demonstration purposes
+        const cardsData = [];
+
+        function handleUpload() {
+            const titleInput = document.getElementById('photoTitle');
+            const fileInput = document.getElementById('photoFile');
+
+            const title = titleInput.value.trim();
+            const file = fileInput.files[0];
+
+            // Basic validation
+            if (!title) {
+                alert("Please provide a title for your card.");
+                return;
+            }
+            if (!file) {
+                alert("Please select a photo to upload.");
+                return;
+            }
+
+            // Read the file as a Data URL so we can display it immediately
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imageUrl = e.target.result;
+                
+                // Create a data object
+                const newCard = {
+                    id: Date.now(),
+                    title: title,
+                    imageUrl: imageUrl,
+                    date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+                };
+
+                // Add to our state array and re-render
+                cardsData.unshift(newCard); // unshift adds to the beginning of the array
+                renderGallery();
+
+                // Reset inputs
+                titleInput.value = '';
+                fileInput.value = '';
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        function renderGallery() {
+            const galleryGrid = document.getElementById('galleryGrid');
+            galleryGrid.innerHTML = ''; // Clear current grid
+
+            cardsData.forEach(card => {
+                // Create card container
+                const cardElement = document.createElement('div');
+                cardElement.className = 'card';
+
+                // Inject HTML structure for the card
+                cardElement.innerHTML = `
+                    <img src="${card.imageUrl}" alt="${card.title}" class="card-image">
+                    <div class="card-content">
+                        <h3 class="card-title">${card.title}</h3>
+                        <span class="card-date">${card.date}</span>
+                    </div>
+                `;
+
+                galleryGrid.appendChild(cardElement);
+            });
+        }
+    </script>
 </body>
-
 </html>
