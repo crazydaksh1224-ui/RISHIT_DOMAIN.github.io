@@ -5,22 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>DRD DOMAIN</title>
     <style>
-        /* CSS Variables for Apple-style Light Theme */
+        /* CSS Variables for Genuine Notion-Style Theme */
         :root {
-            --bg-color: #f5f5f7;
-            --text-primary: #1d1d1f;
-            --text-secondary: #86868b;
-            --card-bg: rgba(255, 255, 255, 0.7);
-            --glass-border: 1px solid rgba(255, 255, 255, 0.5);
-            --accent-color: #0071e3;
-            --accent-hover: #0077ED;
-            --danger-color: #ff3b30;
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            --modal-overlay: rgba(0, 0, 0, 0.4);
-            --lightbox-bg: rgba(0, 0, 0, 0.95);
-            --radius-lg: 24px;
-            --radius-md: 14px;
-            --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            /* Notion Light Theme Colors */
+            --bg-color: #ffffff;
+            --text-primary: #37352f;
+            --text-secondary: #787774;
+            --card-bg: #f1f1ef;
+            --input-bg: #f4f5f6;
+            --glass-border: 1px solid rgba(55, 53, 47, 0.09);
+            --accent-color: #2383e2;
+            --accent-hover: #1a6ab4;
+            --danger-color: #eb5757;
+            --shadow: 0px 1px 2px rgba(15, 15, 15, 0.1);
+            --modal-overlay: rgba(15, 15, 15, 0.4);
+            --lightbox-bg: rgba(15, 15, 15, 0.95);
+            --radius-lg: 12px; /* Notion uses subtler radiuses */
+            --radius-md: 6px;
+            --transition: all 0.2s ease-in-out;
+        }
+
+        /* Notion Dark Theme Colors */
+        body.dark-theme {
+            --bg-color: #191919;
+            --text-primary: #e3e3e3;
+            --text-secondary: #9b9b9b;
+            --card-bg: #202020;
+            --input-bg: #252525;
+            --glass-border: 1px solid rgba(255, 255, 255, 0.09);
+            --accent-color: #2eaadc;
+            --accent-hover: #1c8cb9;
+            --danger-color: #ff7369;
+            --shadow: 0px 1px 2px rgba(0, 0, 0, 0.4);
+            --modal-overlay: rgba(0, 0, 0, 0.6);
+            --lightbox-bg: rgba(0, 0, 0, 0.98);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -35,143 +53,141 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .widget-container { width: 100%; max-width: 900px; }
 
         header { text-align: center; margin-bottom: 40px; }
-        header h1 { font-size: 40px; font-weight: 800; letter-spacing: -0.015em; margin-bottom: 8px; text-transform: uppercase; }
-        header p { font-size: 19px; color: var(--text-secondary); font-weight: 500; letter-spacing: 0.5px; }
+        header h1 { font-size: 32px; font-weight: 700; letter-spacing: -0.015em; margin-bottom: 8px; }
+        header p { font-size: 16px; color: var(--text-secondary); font-weight: 400; }
 
         /* Upload Section */
         .upload-section {
             background: var(--card-bg);
-            backdrop-filter: saturate(180%) blur(20px);
-            -webkit-backdrop-filter: saturate(180%) blur(20px);
             border: var(--glass-border);
             border-radius: var(--radius-lg);
-            padding: 30px;
+            padding: 24px;
             box-shadow: var(--shadow);
-            margin-bottom: 50px;
+            margin-bottom: 40px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 16px;
         }
 
-        .input-group { display: flex; flex-direction: column; gap: 8px; }
-        .input-group label { font-size: 14px; font-weight: 600; color: var(--text-secondary); }
+        .input-group { display: flex; flex-direction: column; gap: 6px; }
+        .input-group label { font-size: 12px; font-weight: 500; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
         
         input[type="text"], input[type="file"] {
-            width: 100%; padding: 16px; border-radius: var(--radius-md);
-            border: 1px solid rgba(0,0,0,0.1); background: rgba(255,255,255,0.8);
-            font-size: 16px; font-family: inherit; transition: var(--transition);
+            width: 100%; padding: 10px 14px; border-radius: var(--radius-md);
+            border: var(--glass-border); background: var(--input-bg);
+            color: var(--text-primary); font-size: 15px; font-family: inherit; transition: var(--transition);
         }
-        input[type="text"]:focus { outline: none; border-color: var(--accent-color); box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.2); }
+        input[type="text"]::placeholder { color: var(--text-secondary); opacity: 0.6; }
+        input[type="text"]:focus { outline: none; border-color: var(--accent-color); }
+        
         input[type="file"]::file-selector-button {
-            background-color: var(--bg-color); border: 1px solid rgba(0,0,0,0.1);
-            border-radius: 8px; padding: 8px 16px; margin-right: 16px;
+            background-color: var(--bg-color); border: var(--glass-border);
+            color: var(--text-primary); border-radius: 4px; padding: 6px 12px; margin-right: 12px;
             cursor: pointer; font-weight: 500; transition: var(--transition);
         }
+        input[type="file"]::file-selector-button:hover { background-color: var(--card-bg); }
         
         .btn-submit {
             background-color: var(--accent-color); color: white; border: none;
-            padding: 16px 24px; border-radius: 980px; font-size: 17px;
-            font-weight: 600; cursor: pointer; transition: var(--transition); align-self: flex-end;
+            padding: 10px 20px; border-radius: var(--radius-md); font-size: 15px;
+            font-weight: 500; cursor: pointer; transition: var(--transition); align-self: flex-end;
         }
-        .btn-submit:hover { background-color: var(--accent-hover); transform: scale(1.02); }
+        .btn-submit:hover { background-color: var(--accent-hover); }
         .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
 
         /* Gallery Grid */
-        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
         
-        .empty-state { text-align: center; grid-column: 1 / -1; color: var(--text-secondary); padding: 40px; font-size: 18px; }
+        .empty-state { text-align: center; grid-column: 1 / -1; color: var(--text-secondary); padding: 40px; font-size: 16px; }
 
         .card {
-            background: var(--card-bg); backdrop-filter: saturate(180%) blur(20px);
-            -webkit-backdrop-filter: saturate(180%) blur(20px);
-            border: var(--glass-border); border-radius: var(--radius-lg);
+            background: var(--card-bg); border: var(--glass-border); border-radius: var(--radius-lg);
             overflow: hidden; box-shadow: var(--shadow); transition: var(--transition);
             cursor: pointer; position: relative;
-            animation: fadeIn 0.5s ease forwards;
+            animation: fadeIn 0.4s ease forwards;
         }
-        .card:hover { transform: translateY(-5px) scale(1.01); box-shadow: 0 14px 40px rgba(0, 0, 0, 0.12); }
+        .card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(15, 15, 15, 0.15); }
 
-        .card-image { width: 100%; height: 220px; object-fit: cover; background-color: #e8e8ed; }
+        .card-image { width: 100%; height: 200px; object-fit: cover; background-color: var(--input-bg); }
         .photo-count {
-            position: absolute; top: 16px; right: 16px;
-            background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            color: white; font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 980px;
+            position: absolute; top: 12px; right: 12px;
+            background: rgba(15, 15, 15, 0.6); color: white; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 4px;
         }
-        .card-content { padding: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .card-content { padding: 16px; display: flex; justify-content: space-between; align-items: center; }
         .card-text { display: flex; flex-direction: column; }
-        .card-title { font-size: 20px; font-weight: 600; margin-bottom: 4px; letter-spacing: -0.01em; }
-        .card-date { font-size: 14px; color: var(--text-secondary); }
+        .card-title { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+        .card-date { font-size: 13px; color: var(--text-secondary); }
         
         .btn-delete {
-            background: none; border: none; color: var(--danger-color); font-size: 20px;
-            cursor: pointer; padding: 8px; border-radius: 50%; transition: background 0.2s;
+            background: none; border: none; color: var(--danger-color); font-size: 18px;
+            cursor: pointer; padding: 6px; border-radius: 4px; transition: background 0.2s;
         }
-        .btn-delete:hover { background: rgba(255, 59, 48, 0.1); }
+        .btn-delete:hover { background: rgba(235, 87, 87, 0.1); }
 
         /* Album Modal */
         .modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--modal-overlay); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            display: flex; justify-content: center; align-items: flex-end; 
-            opacity: 0; pointer-events: none; transition: opacity 0.4s ease; z-index: 100;
+            background: var(--modal-overlay); display: flex; justify-content: center; align-items: flex-end; 
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease; z-index: 100;
         }
         .modal.active { opacity: 1; pointer-events: auto; }
         
         .modal-content {
             background: var(--bg-color); width: 100%; max-width: 900px; height: 85vh;
-            border-radius: 24px 24px 0 0; padding: 30px; overflow-y: auto;
-            transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.2); position: relative;
+            border-radius: 12px 12px 0 0; padding: 24px; overflow-y: auto;
+            transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 -4px 24px rgba(0,0,0,0.15); position: relative;
+            border-top: var(--glass-border);
         }
         .modal.active .modal-content { transform: translateY(0); }
         
         .close-btn {
-            position: sticky; top: 0; float: right; background: rgba(0,0,0,0.1); border: none;
-            width: 36px; height: 36px; border-radius: 50%; font-size: 20px; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; z-index: 2; margin-bottom: -36px;
+            position: sticky; top: 0; float: right; background: var(--card-bg); border: var(--glass-border);
+            color: var(--text-primary); width: 32px; height: 32px; border-radius: 4px; font-size: 16px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; z-index: 2; margin-bottom: -32px;
         }
 
-        .modal-title { font-size: 32px; font-weight: 700; margin-bottom: 24px; padding-top: 10px;}
-        .album-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+        .modal-title { font-size: 24px; font-weight: 700; margin-bottom: 20px; padding-top: 10px;}
+        .album-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
         .album-item {
-            width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 12px;
-            cursor: pointer; transition: transform 0.2s;
+            width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 6px;
+            cursor: pointer; transition: transform 0.2s; background-color: var(--input-bg);
         }
-        .album-item:hover { transform: scale(1.03); }
+        .album-item:hover { transform: scale(1.02); }
 
-        /* Lightbox (Updated for Drag & Zoom) */
+        /* Lightbox */
         .lightbox {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--lightbox-bg); display: flex; justify-content: center; align-items: center;
             opacity: 0; pointer-events: none; transition: opacity 0.3s ease; z-index: 200;
-            overflow: hidden; /* Prevents scrollbars when zooming */
+            overflow: hidden;
         }
         .lightbox.active { opacity: 1; pointer-events: auto; }
         
         .lightbox-img {
-            max-width: 90%; max-height: 90vh; border-radius: 12px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-            transition: transform 0.1s ease-out; /* Smooth scroll feeling */
+            max-width: 90%; max-height: 90vh; border-radius: 6px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: transform 0.1s ease-out;
             transform-origin: center center;
             cursor: grab;
             user-select: none;
-            -webkit-user-drag: none; /* Prevents default browser image drag */
+            -webkit-user-drag: none;
         }
         .lightbox-img:active { cursor: grabbing; }
 
         .lb-controls { 
-            position: absolute; color: white; background: rgba(255,255,255,0.2); border: none; 
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); 
-            width: 50px; height: 50px; border-radius: 25px; font-size: 24px; 
+            position: absolute; color: white; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); 
+            width: 44px; height: 44px; border-radius: 6px; font-size: 20px; 
             cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; 
             z-index: 210;
         }
-        .lb-controls:hover { background: rgba(255,255,255,0.4); }
+        .lb-controls:hover { background: rgba(255,255,255,0.3); }
         .lb-prev { left: 20px; }
         .lb-next { right: 20px; }
         .lb-close { top: 20px; right: 20px; }
@@ -180,9 +196,9 @@
 
         @media (max-width: 600px) {
             .album-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-            header h1 { font-size: 32px; }
-            .modal-content { height: 90vh; padding: 20px; }
-            .lb-controls { width: 40px; height: 40px; font-size: 18px; }
+            header h1 { font-size: 26px; }
+            .modal-content { height: 90vh; padding: 16px; }
+            .lb-controls { width: 38px; height: 38px; font-size: 16px; }
         }
     </style>
 </head>
@@ -227,6 +243,32 @@
     </div>
 
     <script>
+        // ==========================================
+        // 0. NOTION THEME ENGINE (Run Instantly)
+        // ==========================================
+        function initNotionTheme() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const themeParam = urlParams.get('theme');
+            const systemDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+            function applyTheme() {
+                // If explicitly set via ?theme=dark, or if set to auto/unset and system is dark
+                if (themeParam === 'dark' || (!themeParam && systemDark.matches)) {
+                    document.body.classList.add('dark-theme');
+                } else {
+                    document.body.classList.remove('dark-theme');
+                }
+            }
+
+            applyTheme();
+
+            // Watch for system theme changes if no explicit URL param override exists
+            if (!themeParam) {
+                systemDark.addEventListener('change', applyTheme);
+            }
+        }
+        initNotionTheme();
+
         // ==========================================
         // 1. DATABASE ARCHITECTURE (IndexedDB)
         // ==========================================
@@ -396,6 +438,7 @@
             modal.classList.add('active');
         }
 
+        // Force parameter added to window event matching logic
         function closeModal(event, force = false) {
             if (force || event.target.id === 'albumModal') {
                 document.getElementById('albumModal').classList.remove('active');
@@ -477,6 +520,7 @@
             document.getElementById('lightbox').classList.add('active');
         }
 
+        // Reset system hook cleanup
         function closeLightbox() {
             document.getElementById('lightbox').classList.remove('active');
             resetZoom();
